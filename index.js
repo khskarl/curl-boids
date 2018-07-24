@@ -1,4 +1,4 @@
-const numBoids = 200;
+const numBoids = 60;
 let boids = [];
 
 function setup() {
