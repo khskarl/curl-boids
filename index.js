@@ -1,11 +1,12 @@
+const numBoids = 200;
 let boids = [];
 
 function setup() {
 	createCanvas(window.innerWidth, window.innerHeight);
 	smooth();
 
-	for (let i = 0; i < 200; i++) {
-		if (i > 100)
+	for (let i = 0; i < numBoids; i++) {
+		if (i > numBoids / 2)
 			boids[i] = new Boid(random(width), random(height), 0);
 		else
 			boids[i] = new Boid(random(width), random(height), 1);
