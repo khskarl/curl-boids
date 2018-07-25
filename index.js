@@ -7,23 +7,21 @@ function setup() {
 	smooth();
 	noStroke();
 
-	curlField = new CurlField(width, height);
-	let velocityField = curlField.curlField;
-	
-	var img = createImage(width, height);
-	img.loadPixels();
-	for (let i = 0; i < velocityField.length; i++) {
-		for (let j = 0; j < velocityField[i].length; j++) {
-			// fill(velocityField[i][j] * 255, 255);
-			// rect(i, j, 1, 1);
-			// noiseDetail(4, 0.75);
-			// let l = noise(i/50, j/50) * 255;
-			let l = velocityField[i][j];
-			img.set(i, j, color(l.x, l.y, 0));
+	curlField = new CurlField(width, height, 40);
+	let field = curlField.curlField;
+
+	for (let i = 0; i < curlField.width; i++) {
+		for (let j = 0; j < curlField.height; j++) {
+			let l = field[i][j];
+			let x = i * curlField.subdivisions;
+			let y = j * curlField.subdivisions;
+
+			fill(l.mag() * 255);
+			// rect(x, y, curlField.subdivisions, curlField.subdivisions);
 		}
 	}
-	img.updatePixels();
-	image(img, 0, 0);
+
+	// DrawVectorField(curlField.curlField);
 
 	for (let i = 0; i < numBoids; i++) {
 		if (i > numBoids / 2)
@@ -33,16 +31,32 @@ function setup() {
 	}
 }
 
+function DrawVectorField (vectorField) {
+	stroke(255);
+	const width = vectorField.length;
+	const height = vectorField[0].length;
+	for (let i = 0; i < width; i++) {
+		for (let j = 0; j < height; j++) {
+			let vector = vectorField[i][j].mult(30.0);
+			let x = i * curlField.subdivisions + curlField.subdivisions / 2;
+			let y = j * curlField.subdivisions + curlField.subdivisions / 2;
+			line(x, y, x + vector.x, y + vector.y);
+		}
+	}
+}
+
 function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
 	blendMode(OVERLAY);
-	//background(5, 10);
+	background(5, 10);
 
 	blendMode(BLEND);
 	for (let boid of boids) {
+		let environmentForce = curlField.GetVelocityVector(boid.position);
+		boid.ApplyForce(environmentForce.mult(0.7));
 		boid.Run(boids);
 		boid.Render()
 	}
