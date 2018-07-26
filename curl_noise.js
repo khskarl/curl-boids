@@ -44,7 +44,7 @@ class CurlField {
 	}
 
 	GetVelocityVector (canvasPosition) {
-		console.log(canvasPosition)
+		// console.log(canvasPosition)
 		// console.log("raw x: " + canvasPosition.x);
 		// console.log("raw y: " + canvasPosition.y);
 		
